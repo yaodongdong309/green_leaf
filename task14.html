@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>IFE JavaScript Task 01</title>
+</head>
+<body>
+
+<h3>污染城市列表</h3>
+<ul id="aqi-list">
+</ul>
+
+<script type="text/javascript">
+    'use strict';
+    var aqiData = [
+        ['北京', 90],
+        ['上海', 50],
+        ['福州', 10],
+        ['广州', 50],
+        ['成都', 90],
+        ['西安', 100]
+    ];
+
+    (function () {
+        var getEle = function (id) {
+                    return document.getElementById(id);
+                },
+                listEle = getEle('aqi-list'),
+        // yao 文档碎片,避免频繁操作DOM树
+                frag = document.createDocumentFragment(),
+        // yao 显示的文案,需要正则匹配
+                showText = '第%key%名：%val%',
+        // yao 合格标准值
+                standard = 60,
+                parsedData;
+        // yao 过滤不合标准+排序
+        parsedData = aqiData.filter(function (item) {
+            return item[1] > standard;
+        })
+                .sort(function (val1, val2) {
+                    return val2 > val1;
+                });
+        parsedData.forEach(function (item, key) {
+            var li = document.createElement('li');
+            // yao 正则替换,将index,item插入showText中
+            li.innerHTML = showText.replace(/%(\w*)%/g, function (m, $1) {
+                switch ($1) {
+                    case 'key':
+                        return key + 1;
+                    case 'val':
+                        return item.join(', ');
+                    default :
+                        return 'unexpected data';
+                }
+            });
+            frag.appendChild(li);
+        });
+        listEle.appendChild(frag);
+    }());
+
+</script>
+</body>
+</html>
